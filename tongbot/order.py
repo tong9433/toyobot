@@ -3,6 +3,12 @@ import requests
 from PyQt5.QtWidgets import QListWidgetItem
 from PyQt5.QtGui import QBrush, QColor
 
+import os
+import jwt
+import uuid
+import hashlib
+from urllib.parse import urlencode
+
 import time
 
 class Order:
@@ -39,37 +45,4 @@ class Order:
 
             self.window.list_sell_order.addItem(sell_item)
             self.window.list_buy_order.addItem(buy_item)
-
-#    def buy_order(self, market, price):
-#        server_url = os.environ['UPBIT_OPEN_API_SERVER_URL']
-
-#        query = {
-#            'market': market,
-#            'side': 'bid',
-#            'volume': 'null',
-#            'price': price,
-#            'ord_type': 'price',
-#        }
-#        query_string = urlencode(query).encode()
-
-#        m = hashlib.sha512()
-#        m.update(query_string)
-#        query_hash = m.hexdigest()
-
-#        payload = {
-#            'access_key': self.window.access_key,
-#            'nonce': str(uuid.uuid4()),
-#            'query_hash': query_hash,
-#            'query_hash_alg': 'SHA512',
-#        }
-
-#        jwt_token = jwt.encode(payload, self.window.secret_key).decode('utf-8')
-#        authorize_token = 'Bearer {}'.format(jwt_token)
-#        headers = {"Authorization": authorize_token}
-
-#        res = requests.post(https://api.upbit.com + "/v1/orders", params=query, headers=headers)
-
-
-
-
 

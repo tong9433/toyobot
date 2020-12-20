@@ -18,6 +18,8 @@ from chatAPI import chatAPI
 from cralwer import Cralwer
 from logger import Logger
 
+from pyupbit import Upbit
+
 class Thread(QThread):
     signal_update = pyqtSignal()
 
@@ -155,8 +157,17 @@ class Auto:
             self.window.line_edit_cur_market_name.setText(self.target_market)
 
             #2. 해당 코인 구매 여부 확인 "buy"
+
             #3. 구매 "buy"
-            #4. 카카오톡 알림 "sell
+            if self.window.check_box_buy.isChecked():
+                order_price = float(self.window.line_edit_buy_price.text())
+                log = self.logger.print_log(
+                    "구매 시작합니다. 시장가 매수 종목:{}, 주문금액:{}".format(
+                        self.target_market, order_price))
+                upbit = Upbit(self.window.access_key, self.window.secret_key)
+                self.logger.print_log(upbit.buy_market_order(self.target_market, order_price))
+
+            #4. 텔레그램 알림 "sell
             #5. 매도 "sell"
             #6. stop "stop"
 
@@ -179,7 +190,7 @@ class Auto:
             url = "https://api.upbit.com/v1/candles/minutes/1"
             querystring = {"market":market,"count":"1"}
             res = requests.request("GET", url, params=querystring)
-            print(res.text)
+#            print(res.text)
             coin_minitue_candle = res.json()[0]
             info_trade_price = coin_minitue_candle["trade_price"]
             info_high_price = coin_minitue_candle["high_price"]
@@ -189,7 +200,7 @@ class Auto:
             self.window.label_info_1.setText(str(info_low_price))
             self.window.label_info_2.setText(str(info_high_price))
             self.window.label_info_3.setText(str(info_candle_acc_trade_price))
-            # 현재가 정보
+#             현재가 정보
             url = "https://api.upbit.com/v1/ticker"
             querystring = {"markets": market}
             res = requests.request("GET", url, params=querystring)

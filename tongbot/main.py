@@ -24,6 +24,8 @@ class Main(QMainWindow, form_class):
         self.setupUi(self)
         self.order = Order(self)
         self.auto_bot = Auto(self)
+        self.access_key = self.line_edit_access_key.text()
+        self.secret_key = self.line_edit_secret_key.text()
         self.connect_signal()
 
     def init(self):
@@ -49,57 +51,59 @@ class Main(QMainWindow, form_class):
 
 
     def init_acount(self):
-        server_url = 'https://api.upbit.com'
+        try:
+            server_url = 'https://api.upbit.com'
 
-        payload = {
-            'access_key': self.access_key,
-            'nonce': str(uuid.uuid4()),
-        }
+            payload = {
+                'access_key': self.access_key,
+                'nonce': str(uuid.uuid4()),
+            }
 
-        jwt_token = jwt.encode(payload, self.secret_key).decode('utf-8')
-        authorize_token = 'Bearer {}'.format(jwt_token)
-        headers = {"Authorization": authorize_token}
+            jwt_token = jwt.encode(payload, self.secret_key).decode('utf-8')
+            authorize_token = 'Bearer {}'.format(jwt_token)
+            headers = {"Authorization": authorize_token}
 
-        res = requests.get(server_url + "/v1/accounts", headers=headers)
+            res = requests.get(server_url + "/v1/accounts", headers=headers)
 
-        a = res.json()
+            a = res.json()
 
-        self.table_account.setRowCount(len(a) + 1)
-        self.table_account.setColumnCount(9)
+            self.table_account.setRowCount(len(a) + 1)
+            self.table_account.setColumnCount(9)
 
-        account_sum_price = 0;
-        for i, coin in enumerate(a):
-            coin_name = coin["currency"]
-            balence = float(coin["balance"])
-            locked = float(coin["locked"])
-            avg_buy_price = float(coin["avg_buy_price"])
-            cnt_sum = balence + locked
-            if coin_name in ['HORUS', 'ADD', 'MEETONE', 'CHL', 'BLACK']:
-                continue
-            self.table_account.setItem(i, 0, QTableWidgetItem(coin_name))
-            self.table_account.setItem(i, 1, QTableWidgetItem(format(balence, ",")))
-            self.table_account.setItem(i, 2, QTableWidgetItem(format(locked, ",")))
-            self.table_account.setItem(i, 3, QTableWidgetItem(format(avg_buy_price, ",")))
-            self.table_account.setItem(i, 4, QTableWidgetItem(coin["unit_currency"]))
-            if coin_name == "KRW":
-                self.table_account.setItem(i, 6, QTableWidgetItem(format(int(cnt_sum), ",") + " 원"))
-                account_sum_price += int(cnt_sum)
-            else:
-                cur_price = float(self.check_coin_candle(coin_name)["trade_price"])
-                profit_price = int((cur_price - avg_buy_price) * cnt_sum)
-                profit_ratio = round((cur_price / avg_buy_price - 1.0), 8) * 100
-                sum_price = int(int(cur_price) * cnt_sum)
-                self.table_account.setItem(i, 5, QTableWidgetItem(format(int(cur_price), ",")+" 원"))
-                self.table_account.setItem(i, 6, QTableWidgetItem(format(sum_price, ",")+" 원"))
-                self.table_account.setItem(i, 7, QTableWidgetItem(format(profit_ratio, ",")+" %"))
-                self.table_account.setItem(i, 8, QTableWidgetItem(format(profit_price, ",")+" 원"))
-                account_sum_price += sum_price
+            account_sum_price = 0;
+            for i, coin in enumerate(a):
+                coin_name = coin["currency"]
+                balence = float(coin["balance"])
+                locked = float(coin["locked"])
+                avg_buy_price = float(coin["avg_buy_price"])
+                cnt_sum = balence + locked
+                if coin_name in ['HORUS', 'ADD', 'MEETONE', 'CHL', 'BLACK']:
+                    continue
+                self.table_account.setItem(i, 0, QTableWidgetItem(coin_name))
+                self.table_account.setItem(i, 1, QTableWidgetItem(format(balence, ",")))
+                self.table_account.setItem(i, 2, QTableWidgetItem(format(locked, ",")))
+                self.table_account.setItem(i, 3, QTableWidgetItem(format(avg_buy_price, ",")))
+                self.table_account.setItem(i, 4, QTableWidgetItem(coin["unit_currency"]))
+                if coin_name == "KRW":
+                    self.table_account.setItem(i, 6, QTableWidgetItem(format(int(cnt_sum), ",") + " 원"))
+                    account_sum_price += int(cnt_sum)
+                else:
+                    cur_price = float(self.check_coin_candle(coin_name)["trade_price"])
+                    profit_price = int((cur_price - avg_buy_price) * cnt_sum)
+                    profit_ratio = round((cur_price / avg_buy_price - 1.0), 8) * 100
+                    sum_price = int(int(cur_price) * cnt_sum)
+                    self.table_account.setItem(i, 5, QTableWidgetItem(format(int(cur_price), ",")+" 원"))
+                    self.table_account.setItem(i, 6, QTableWidgetItem(format(sum_price, ",")+" 원"))
+                    self.table_account.setItem(i, 7, QTableWidgetItem(format(profit_ratio, ",")+" %"))
+                    self.table_account.setItem(i, 8, QTableWidgetItem(format(profit_price, ",")+" 원"))
+                    account_sum_price += sum_price
 
-        self.table_account.setItem(len(a), 0, QTableWidgetItem("총 평가 금액"))
-        self.table_account.setItem(len(a), 1, QTableWidgetItem(str(format(account_sum_price, ",")) + "원"))
-        self.table_account.resizeColumnsToContents()
-        self.table_account.resizeRowsToContents()
-
+            self.table_account.setItem(len(a), 0, QTableWidgetItem("총 평가 금액"))
+            self.table_account.setItem(len(a), 1, QTableWidgetItem(str(format(account_sum_price, ",")) + "원"))
+            self.table_account.resizeColumnsToContents()
+            self.table_account.resizeRowsToContents()
+        except Exception as e:
+            print(e)
 
     def check_coin_candle(self, coin_name):
         url = "https://api.upbit.com/v1/candles/minutes/1"
@@ -107,7 +111,6 @@ class Main(QMainWindow, form_class):
         res = requests.request("GET", url, params=querystring)
 
         return res.json()[0]
-
 
 
 if __name__ == "__main__":
