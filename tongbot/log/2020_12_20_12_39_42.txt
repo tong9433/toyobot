@@ -1,0 +1,7 @@
+[2020-12-20 12:39:42] 제대로 된 코인 마켓명을 적으세요
+[2020-12-20 12:39:42] Expecting value: line 1 column 1 (char 0)
+[2020-12-20 12:39:43] name 's' is not defined
+[2020-12-20 12:39:44] name 's' is not defined
+[2020-12-20 12:39:45] name 's' is not defined
+[2020-12-20 12:39:46] name 's' is not defined
+[2020-12-20 12:39:47] name 's' is not defined

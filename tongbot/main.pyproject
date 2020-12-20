@@ -1,0 +1,3 @@
+{
+    "files": ["main.py","cralwer.py","form.ui","logger.py","chatAPI.py","order.py","auto.py","siganal.py"]
+}

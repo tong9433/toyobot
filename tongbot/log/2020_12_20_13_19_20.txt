@@ -1,0 +1,6 @@
+[2020-12-20 13:19:20] 제대로 된 코인 마켓명을 적으세요
+[2020-12-20 13:19:20] Expecting value: line 1 column 1 (char 0)
+[2020-12-20 13:19:21] 'Auto' object has no attribute 'order_thread'
+[2020-12-20 13:19:22] 'Auto' object has no attribute 'order_thread'
+[2020-12-20 13:19:23] 'Auto' object has no attribute 'order_thread'
+[2020-12-20 13:19:24] 'Auto' object has no attribute 'order_thread'
