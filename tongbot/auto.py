@@ -15,6 +15,8 @@ from PyQt5.QtCore import pyqtSlot
 
 import datetime
 from chatAPI import chatAPI
+from order_upbit import OrderUpbit
+from chat_selling import Sellchat
 from cralwer import Cralwer
 from logger import Logger
 
@@ -66,6 +68,8 @@ class Auto:
         self.connect_signal()
         self.update_table_widget_market_info()
         self.chat_bot = chatAPI()
+        self.order_upbit = OrderUpbit(window)
+
 
     def init(self):
         self.cur_krw_coin_list = []
@@ -121,7 +125,11 @@ class Auto:
             self.window.list_widget_announce.addItem(QListWidgetItem(unit["title"]))
             if parsed_list[0] == "[거래]" and parsed_list[1] == "원화":
                 self.cur_anounce_coin_list.append("KRW-{}".format(parsed_list[-1][0:-1]))
-        self.logger.print_log("공지사항 리스트를 갱신합니다.")
+
+        now = datetime.datetime.now().timestamp()
+        time = datetime.datetime.fromtimestamp(int(now)).strftime('%Y-%m-%d %H:%M:%S')
+        if int(time.split(":")[-1]) % 30 == 0:
+            self.logger.print_log("공지사항 리스트를 갱신합니다.")
 
     def check_create_new_coin(self):
         signal = ""
@@ -155,17 +163,29 @@ class Auto:
             self.auto_bot["new_krw_coin"] = "BTC-"+new_coin_market.split("-")[1]
             self.target_market = self.auto_bot["new_krw_coin"]
             self.window.line_edit_cur_market_name.setText(self.target_market)
-
             #2. 해당 코인 구매 여부 확인 "buy"
+            target_market_buy_price = self.order_upbit.buy_btc(self.target_market)
+            sell = Sellchat()
+            sell_per_prc = sell.selling_msg()
+            if sell_per_prc[0]==False:
+                if sell_per_prc[1] == 'Null':
+                    # 자동매도 거부
+                    print("자동매도 거부")
+                    pass
+                else:
+                    # 지정 매도 : 전액으로 상승률 x%
+                    self.order_upbit.sell_btc(self.target_market, float(sell_per_prc[1]), 1, target_market_buy_price)
+                    print("지정 매도")
+            else:
+                # 상승률, 매도 %
+                self.order_upbit.sell_btc(self.target_market, float(sell_per_prc[0]), float(sell_per_prc[1]), target_market_buy_price)
+                print("상승률 매도")
+
+
+            ## 여기에서 telegram으로 메시지 전송
 
             #3. 구매 "buy"
-            if self.window.check_box_buy.isChecked():
-                order_price = float(self.window.line_edit_buy_price.text())
-                log = self.logger.print_log(
-                    "구매 시작합니다. 시장가 매수 종목:{}, 주문금액:{}".format(
-                        self.target_market, order_price))
-                upbit = Upbit(self.window.access_key, self.window.secret_key)
-                self.logger.print_log(upbit.buy_market_order(self.target_market, order_price))
+#            self.logger.print_log(upbit.buy_market_order(self.target_market, order_price))
 
             #4. 텔레그램 알림 "sell
             #5. 매도 "sell"
@@ -182,7 +202,7 @@ class Auto:
         #)
 
         # tes 2 : 공지사항 등록
-        self.cur_anounce_coin_list.append("KRW-ONIT")
+        self.cur_anounce_coin_list.append("KRW-SAND")
 
     def update_table_widget_market_info(self):
         try:
@@ -190,7 +210,6 @@ class Auto:
             url = "https://api.upbit.com/v1/candles/minutes/1"
             querystring = {"market":market,"count":"1"}
             res = requests.request("GET", url, params=querystring)
-#            print(res.text)
             coin_minitue_candle = res.json()[0]
             info_trade_price = coin_minitue_candle["trade_price"]
             info_high_price = coin_minitue_candle["high_price"]
@@ -219,26 +238,6 @@ class Auto:
             if self.auto_bot["status"] == "buy":
                 self.logger.print_log("[{}] 현재가: {} 변화율: {}".format(
                 self.auto_bot["new_krw_coin"], str(coin_minitue_candle["trade_price"]), str(info_signed_change_rate)+" %"))
-
-
-            # 최근 체결 내역
-#            url = "https://api.upbit.com/v1/trades/ticks"
-#            querystring = {
-#                "market":market,
-#                "count":"100"
-#            }
-#            res = requests.request("GET", url, params=querystring)
-#            list_trade = res.json()
-#            sum = 0
-#            for a in list_trade:
-#                sum += a["trade_volume"]
-#            print(time)
-#            print(list_trade[0])
-#            print(list_trade[1])
-#            print(list_trade[2])
-#            print(list_trade[3])
-#            print(list_trade[4])
-#            self.logger.print_log(res.json)
 
         except Exception as e :
             self.logger.print_log("제대로 된 코인 마켓명을 적으세요")
@@ -281,7 +280,10 @@ class Auto:
         self.window.table_widget_api.resizeColumnsToContents()
         self.window.table_widget_api.resizeRowsToContents()
         self.window.label_cnt_api.setText(str(cnt_krw_coin) + "개")
-        self.logger.print_log("원화 상장 리스트를 갱신합니다.")
+        now = datetime.datetime.now().timestamp()
+        time = datetime.datetime.fromtimestamp(int(now)).strftime('%Y-%m-%d %H:%M:%S')
+        if int(time.split(":")[-1]) % 30 == 0:
+            self.logger.print_log("원화 상장 리스트를 갱신합니다.")
 
     def autobot_status_changed(self):
         self.window.label_status.setText(self.auto_bot["status"])
@@ -305,6 +307,4 @@ class Auto:
         self.window.btn_stop.setEnabled(False)
         self.init_auto_bot()
         self.autobot_status_changed()
-
-
 

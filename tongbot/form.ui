@@ -42,7 +42,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -145,7 +145,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>uBlCPpWyd23qOYNmC3CIVSKxRaDn1Yz0IabepGLW</string>
+       <string>GrEAq6cB3LE0aDjFCtK8tpDlWz73kbZYZJJGCu9Y</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="line_edit_secret_key">
@@ -158,7 +158,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>vN38N4kjdAjd0F1GuQbr3dAbckUNv72u7O927HF3</string>
+       <string>zO44EwFCSVKUxt8WKPixheMRSgDRbt4AtaWEIEo2</string>
       </property>
      </widget>
      <widget class="QPushButton" name="btn_set_key">

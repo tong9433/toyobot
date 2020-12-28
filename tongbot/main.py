@@ -22,10 +22,10 @@ class Main(QMainWindow, form_class):
     def __init__(self):
         super(Main, self).__init__()
         self.setupUi(self)
-        self.order = Order(self)
-        self.auto_bot = Auto(self)
         self.access_key = self.line_edit_access_key.text()
         self.secret_key = self.line_edit_secret_key.text()
+        self.order = Order(self)
+        self.auto_bot = Auto(self)
         self.connect_signal()
 
     def init(self):
@@ -88,21 +88,23 @@ class Main(QMainWindow, form_class):
                     self.table_account.setItem(i, 6, QTableWidgetItem(format(int(cnt_sum), ",") + " 원"))
                     account_sum_price += int(cnt_sum)
                 else:
-                    cur_price = float(self.check_coin_candle(coin_name)["trade_price"])
-                    profit_price = int((cur_price - avg_buy_price) * cnt_sum)
-                    profit_ratio = round((cur_price / avg_buy_price - 1.0), 8) * 100
-                    sum_price = int(int(cur_price) * cnt_sum)
-                    self.table_account.setItem(i, 5, QTableWidgetItem(format(int(cur_price), ",")+" 원"))
-                    self.table_account.setItem(i, 6, QTableWidgetItem(format(sum_price, ",")+" 원"))
-                    self.table_account.setItem(i, 7, QTableWidgetItem(format(profit_ratio, ",")+" %"))
-                    self.table_account.setItem(i, 8, QTableWidgetItem(format(profit_price, ",")+" 원"))
-                    account_sum_price += sum_price
+                        cur_price = float(self.check_coin_candle(coin_name)["trade_price"])
+                        profit_price = int((cur_price - avg_buy_price) * cnt_sum)
+                        profit_ratio = round((cur_price / avg_buy_price - 1.0), 8) * 100
+                        sum_price = int(int(cur_price) * cnt_sum)
+                        self.table_account.setItem(i, 5, QTableWidgetItem(format(int(cur_price), ",")+" 원"))
+                        self.table_account.setItem(i, 6, QTableWidgetItem(format(sum_price, ",")+" 원"))
+                        self.table_account.setItem(i, 7, QTableWidgetItem(format(profit_ratio, ",")+" %"))
+                        self.table_account.setItem(i, 8, QTableWidgetItem(format(profit_price, ",")+" 원"))
+                        account_sum_price += sum_price
 
             self.table_account.setItem(len(a), 0, QTableWidgetItem("총 평가 금액"))
             self.table_account.setItem(len(a), 1, QTableWidgetItem(str(format(account_sum_price, ",")) + "원"))
             self.table_account.resizeColumnsToContents()
             self.table_account.resizeRowsToContents()
         except Exception as e:
+            self.table_account.resizeColumnsToContents()
+            self.table_account.resizeRowsToContents()
             print(e)
 
     def check_coin_candle(self, coin_name):
