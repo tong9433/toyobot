@@ -21,6 +21,7 @@ from cralwer import Cralwer
 from logger import Logger
 
 from pyupbit import Upbit
+import pyupbit
 
 class Thread(QThread):
     signal_update = pyqtSignal()
@@ -66,10 +67,9 @@ class Auto:
         self.auto_thread.start()
         self.init_auto_bot()
         self.connect_signal()
-        self.update_table_widget_market_info()
-        self.chat_bot = chatAPI()
+        self.update_target_price()
+        self.chat_bot = chatAPI(window)
         self.order_upbit = OrderUpbit(window)
-
 
     def init(self):
         self.cur_krw_coin_list = []
@@ -78,6 +78,10 @@ class Auto:
         self.target_market= "KRW-BTC"
         self.window.line_edit_cur_market_name.setText(self.target_market)
         self.test = False
+        self.sell_time_limit = int(self.window.line_edit_sell_time.text())
+        self.start_target_price = 1
+        self.cur_target_price = 1
+        self.sell_status = [True]
 
     def connect_signal(self):
         self.auto_thread.signal_update.connect(self.update)
@@ -91,9 +95,13 @@ class Auto:
                 self.load_api_krw_coin()
             if status == "start":
                 self.load_upbit_annoucement()
-                self.check_cnt_krw_coin()
+                self.check_mode()
+            if status == "buy" or status == "sell":
+                self.update_target_price()
             if status == "buy":
-                self.update_table_widget_market_info()
+                self.buy_mode()
+            if status == "sell":
+                self.sell_mode()
 
         except Exception as e:
             self.logger.print_log(str(e))
@@ -128,7 +136,7 @@ class Auto:
 
         now = datetime.datetime.now().timestamp()
         time = datetime.datetime.fromtimestamp(int(now)).strftime('%Y-%m-%d %H:%M:%S')
-        if int(time.split(":")[-1]) % 30 == 0:
+        if int(time.split(":")[-1]) % 5 == 0:
             self.logger.print_log("공지사항 리스트를 갱신합니다.")
 
     def check_create_new_coin(self):
@@ -142,57 +150,69 @@ class Auto:
         cur_krw_market_list = []
         for coin in self.cur_krw_coin_list:
             cur_krw_market_list.append(coin["market"])
-
         for anounce_coin in self.cur_anounce_coin_list:
             if not anounce_coin in cur_krw_market_list:
                 signal = " [공지] "
                 log = self.logger.print_log("{}: 원화상장 시그널이 포착되었습니다. 구매단계로 전환합니다.".format(signal))
                 self.chat_bot.send_to_me_telegram_message(log)
                 return True
-
         return False
 
-    def check_cnt_krw_coin(self):
+    def check_mode(self):
         if self.check_create_new_coin():
-            self.auto_bot["status"] = "buy"
-            # Todo
-            #1. 해당 코인이 뭔지 찾기 "buy"
             new_coin_market = self.search_new_coin(self)
             log = self.logger.print_log("새 원화 상장 코인 : {}".format(new_coin_market))
             self.chat_bot.send_to_me_telegram_message(log)
             self.auto_bot["new_krw_coin"] = "BTC-"+new_coin_market.split("-")[1]
             self.target_market = self.auto_bot["new_krw_coin"]
             self.window.line_edit_cur_market_name.setText(self.target_market)
-            #2. 해당 코인 구매 여부 확인 "buy"
-            target_market_buy_price = self.order_upbit.buy_btc(self.target_market)
-            sell = Sellchat()
-            sell_per_prc = sell.selling_msg()
-            if sell_per_prc[0]==False:
-                if sell_per_prc[1] == 'Null':
-                    # 자동매도 거부
-                    print("자동매도 거부")
-                    pass
-                else:
-                    # 지정 매도 : 전액으로 상승률 x%
-                    self.order_upbit.sell_btc(self.target_market, float(sell_per_prc[1]), 1, target_market_buy_price)
-                    print("지정 매도")
-            else:
-                # 상승률, 매도 %
-                self.order_upbit.sell_btc(self.target_market, float(sell_per_prc[0]), float(sell_per_prc[1]), target_market_buy_price)
-                print("상승률 매도")
+            self.auto_bot["status"] = "buy"
+            self.autobot_status_changed()
 
+    def update_target_price(self):
+        market = self.target_market
+        self.cur_target_price = pyupbit.get_current_price(self.target_market)
+        self.logger.print_log("[{}] 현재가 {}".format(
+            self.auto_bot["new_krw_coin"], str(self.cur_target_price)))
 
-            ## 여기에서 telegram으로 메시지 전송
-
-            #3. 구매 "buy"
-#            self.logger.print_log(upbit.buy_market_order(self.target_market, order_price))
-
-            #4. 텔레그램 알림 "sell
-            #5. 매도 "sell"
-            #6. stop "stop"
-
-#            self.auto_bot["buy"] = True
+    def buy_mode(self):
+        if self.window.check_box_buy.isChecked():
+            print(a)
+            self.start_target_price = self.order_upbit.buy_btc(self.target_market)
+            self.auto_bot["buy"] = True
+        self.auto_bot["status"] = "sell"
         self.autobot_status_changed()
+
+    def sell_mode(self):
+        sell = Sellchat(self.window)
+        sell.selling_msg()
+        self.sell_time_limit -= 1
+        self.logger.print_log("{}초 뒤에 시장가 매도 진행됩니다.".format(self.sell_time_limit))
+        if self.sell_status[0] == False:
+            if self.sell_status[1] == None:
+                self.logger.print_log("자동매도 거부")
+                self.auto_bot["status"] = "end"
+                self.autobot_status_changed()
+        else:
+            # 목표 percent 도달 시 시장가 매도(default: 50%)
+            if self.window.check_box_sell.isChecked():
+                sell_percent = float(self.line_edit_sell_percent.text())
+                if float(100 * (self.cur_target_price - self.start_target_price) / self.start_target_price) > sell_percent :
+                    self.order_upbit.sell_btc(self.target_market)
+                    self.auto_bot["status"] = "end"
+                    self.autobot_status_changed()
+
+            # 하락시 시장가 매도 (default: -10%)
+            if float(100 * (self.cur_target_price - self.start_target_price) / self.start_target_price) < -10.0 :
+                self.order_upbit.sell_btc(self.target_market)
+                self.auto_bot["status"] = "end"
+                self.autobot_status_changed()
+
+            # 타임초과 시 시장가 매도 (default: 90초)
+            if self.sell_time_limit < 0:
+                self.order_upbit.sell_btc(self.target_market)
+                self.auto_bot["status"] = "end"
+                self.autobot_status_changed()
 
     def test_btn_clicked(self):
         self.test =True
@@ -203,45 +223,6 @@ class Auto:
 
         # tes 2 : 공지사항 등록
         self.cur_anounce_coin_list.append("KRW-SAND")
-
-    def update_table_widget_market_info(self):
-        try:
-            market = self.target_market
-            url = "https://api.upbit.com/v1/candles/minutes/1"
-            querystring = {"market":market,"count":"1"}
-            res = requests.request("GET", url, params=querystring)
-            coin_minitue_candle = res.json()[0]
-            info_trade_price = coin_minitue_candle["trade_price"]
-            info_high_price = coin_minitue_candle["high_price"]
-            info_low_price = coin_minitue_candle["low_price"]
-            info_candle_acc_trade_price = round(coin_minitue_candle["candle_acc_trade_price"], 1)
-            self.window.label_info_0.setText(str(info_trade_price))
-            self.window.label_info_1.setText(str(info_low_price))
-            self.window.label_info_2.setText(str(info_high_price))
-            self.window.label_info_3.setText(str(info_candle_acc_trade_price))
-#             현재가 정보
-            url = "https://api.upbit.com/v1/ticker"
-            querystring = {"markets": market}
-            res = requests.request("GET", url, params=querystring)
-
-            coin_cur_info = res.json()[0]
-            info_change = coin_cur_info["change"]
-            info_signed_change_price = coin_cur_info["signed_change_price"]
-            info_signed_change_rate = round(coin_cur_info["signed_change_rate"] * 100,3)
-            info_trade_volume = coin_cur_info["trade_volume"]
-            info_prev_closing_price = coin_cur_info["prev_closing_price"]
-            self.window.label_info_4.setText(str(info_change))
-            self.window.label_info_5.setText(str(info_signed_change_price))
-            self.window.label_info_6.setText(str(info_signed_change_rate)+" %")
-            self.window.label_info_7.setText(str(info_trade_volume))
-            self.window.label_info_8.setText(str(info_prev_closing_price))
-            if self.auto_bot["status"] == "buy":
-                self.logger.print_log("[{}] 현재가: {} 변화율: {}".format(
-                self.auto_bot["new_krw_coin"], str(coin_minitue_candle["trade_price"]), str(info_signed_change_rate)+" %"))
-
-        except Exception as e :
-            self.logger.print_log("제대로 된 코인 마켓명을 적으세요")
-            self.logger.print_log(e)
 
     def init_auto_bot(self):
         self.auto_bot = {
@@ -282,8 +263,9 @@ class Auto:
         self.window.label_cnt_api.setText(str(cnt_krw_coin) + "개")
         now = datetime.datetime.now().timestamp()
         time = datetime.datetime.fromtimestamp(int(now)).strftime('%Y-%m-%d %H:%M:%S')
-        if int(time.split(":")[-1]) % 30 == 0:
+        if int(time.split(":")[-1]) % 5 == 0:
             self.logger.print_log("원화 상장 리스트를 갱신합니다.")
+
 
     def autobot_status_changed(self):
         self.window.label_status.setText(self.auto_bot["status"])
@@ -307,4 +289,3 @@ class Auto:
         self.window.btn_stop.setEnabled(False)
         self.init_auto_bot()
         self.autobot_status_changed()
-

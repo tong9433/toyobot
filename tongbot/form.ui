@@ -52,7 +52,7 @@
       <property name="geometry">
        <rect>
         <x>30</x>
-        <y>220</y>
+        <y>320</y>
         <width>1841</width>
         <height>511</height>
        </rect>
@@ -145,7 +145,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>GrEAq6cB3LE0aDjFCtK8tpDlWz73kbZYZJJGCu9Y</string>
+       <string/>
       </property>
      </widget>
      <widget class="QLineEdit" name="line_edit_secret_key">
@@ -158,7 +158,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>zO44EwFCSVKUxt8WKPixheMRSgDRbt4AtaWEIEo2</string>
+       <string/>
       </property>
      </widget>
      <widget class="QPushButton" name="btn_set_key">
@@ -212,6 +212,58 @@
       </property>
       <property name="text">
        <string>update</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="line_edit_telegram_token">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>210</y>
+        <width>321</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="line_edit_telegram_id">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>260</y>
+        <width>321</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_4">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>210</y>
+        <width>151</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>telegram token</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_42">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>260</y>
+        <width>151</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>telegram id</string>
       </property>
      </widget>
     </widget>
@@ -524,7 +576,7 @@
         <string>매도 Limit</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_3">
+      <widget class="QLineEdit" name="line_edit_sell_percent">
        <property name="geometry">
         <rect>
          <x>200</x>
@@ -532,6 +584,9 @@
          <width>191</width>
          <height>31</height>
         </rect>
+       </property>
+       <property name="text">
+        <string>50</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_12">
@@ -607,6 +662,45 @@
        </property>
        <property name="text">
         <string>시장가 매도</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_40">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>300</y>
+         <width>141</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>시간 Limit</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="line_edit_sell_time">
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>300</y>
+         <width>191</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>90</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_41">
+       <property name="geometry">
+        <rect>
+         <x>411</x>
+         <y>294</y>
+         <width>51</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>초</string>
        </property>
       </widget>
      </widget>

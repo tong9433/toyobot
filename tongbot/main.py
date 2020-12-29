@@ -24,6 +24,8 @@ class Main(QMainWindow, form_class):
         self.setupUi(self)
         self.access_key = self.line_edit_access_key.text()
         self.secret_key = self.line_edit_secret_key.text()
+        self.telegram_token = self.line_edit_telegram_token.text()
+        self.telegram_id = self.line_edit_telegram_id.text()
         self.order = Order(self)
         self.auto_bot = Auto(self)
         self.connect_signal()
