@@ -184,7 +184,8 @@ class Auto:
 
     def sell_mode(self):
         sell = Sellchat(self.window, self)
-        sell.selling_msg()
+        if self.sell_time_limit % 5 == 0:
+            sell.selling_msg()
         self.sell_time_limit -= 1
         self.logger.print_log("{}초 뒤에 시장가 매도 진행됩니다.".format(self.sell_time_limit))
         if self.sell_status[0] == False:
