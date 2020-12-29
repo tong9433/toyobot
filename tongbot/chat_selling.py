@@ -5,8 +5,9 @@ from telepot.loop import MessageLoop
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 
 class Sellchat:
-    def __init__(self, window):
+    def __init__(self, window, parent):
         self.window = window
+        self.parent = parent
         self.flag = 0
         self.telegram_token = window.telegram_token
         self.telegram_id = window.telegram_id
@@ -15,13 +16,13 @@ class Sellchat:
     def on_chat_message(self, msg):
         content_type, chat_type, chat_id = telepot.glance(msg)
         self.bot.sendMessage(self.telegram_id, 'ok, selling ')
-        self.window.sell_status = [ float(msg['text'].split()[0])*0.01 , float(msg['text'].split()[1])*0.01 ]
+        self.parent.sell_status = [ float(msg['text'].split()[0])*0.01 , float(msg['text'].split()[1])*0.01 ]
 
     def on_callback_query(self, msg):
         query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
         if query_data == 'no':
             self.bot.sendMessage(self.telegram_id, '자동 매도 거부, tracking 시작합니다.')
-            self.window.sell_status = [False, None]
+            self.parent.sell_status = [False, None]
 
     def selling_msg(self):
         keyboard = InlineKeyboardMarkup(inline_keyboard=[

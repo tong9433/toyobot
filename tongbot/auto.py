@@ -177,14 +177,13 @@ class Auto:
 
     def buy_mode(self):
         if self.window.check_box_buy.isChecked():
-            print(a)
             self.start_target_price = self.order_upbit.buy_btc(self.target_market)
             self.auto_bot["buy"] = True
         self.auto_bot["status"] = "sell"
         self.autobot_status_changed()
 
     def sell_mode(self):
-        sell = Sellchat(self.window)
+        sell = Sellchat(self.window, self)
         sell.selling_msg()
         self.sell_time_limit -= 1
         self.logger.print_log("{}초 뒤에 시장가 매도 진행됩니다.".format(self.sell_time_limit))
