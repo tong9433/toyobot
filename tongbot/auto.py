@@ -177,8 +177,8 @@ class Auto:
 
     def buy_mode(self):
         if self.window.check_box_buy.isChecked():
-            self.start_target_price = self.order_upbit.buy_btc(self.target_market)
             self.auto_bot["buy"] = True
+        self.start_target_price = self.order_upbit.buy_btc(self.target_market)
         self.auto_bot["status"] = "sell"
         self.autobot_status_changed()
 
@@ -194,15 +194,18 @@ class Auto:
                 self.autobot_status_changed()
         else:
             # 목표 percent 도달 시 시장가 매도(default: 50%)
+            my_percent = float(100 * (self.cur_target_price - self.start_target_price) / self.start_target_price)
+            self.logger.print_log("현재 가격 {} 구매 가격 {}".format(self.cur_target_price, self.start_target_price))
+            self.logger.print_log("현재 나의 퍼센트 {}".format(my_percent))
             if self.window.check_box_sell.isChecked():
                 sell_percent = float(self.line_edit_sell_percent.text())
-                if float(100 * (self.cur_target_price - self.start_target_price) / self.start_target_price) > sell_percent :
+                if my_percent > float(sell_percent) :
                     self.order_upbit.sell_btc(self.target_market)
                     self.auto_bot["status"] = "end"
                     self.autobot_status_changed()
 
             # 하락시 시장가 매도 (default: -10%)
-            if float(100 * (self.cur_target_price - self.start_target_price) / self.start_target_price) < -10.0 :
+            if my_percent < float(-10.0) :
                 self.order_upbit.sell_btc(self.target_market)
                 self.auto_bot["status"] = "end"
                 self.autobot_status_changed()
