@@ -19,6 +19,7 @@ from order_upbit import OrderUpbit
 from chat_selling import Sellchat
 from cralwer import Cralwer
 from logger import Logger
+from disclosure import Disclosure
 
 from pyupbit import Upbit
 import pyupbit
@@ -70,11 +71,13 @@ class Auto:
         self.update_target_price()
         self.chat_bot = chatAPI(window)
         self.order_upbit = OrderUpbit(window)
+        self.disclosure = Disclosure(window, self)
 
     def init(self):
         self.cur_krw_coin_list = []
         self.start_krw_coin_list = []
         self.cur_anounce_coin_list = []
+        self.latest_announce = ""
         self.target_market= "KRW-BTC"
         self.window.line_edit_cur_market_name.setText(self.target_market)
         self.test = False
@@ -89,12 +92,12 @@ class Auto:
     def update(self):
         try:
             status = self.auto_bot["status"]
-            # self.window.update_account_btn_clicked()
-            # self.window.order.get_order_info()
+            self.order_upbit.update_account()
             if status == "stop" or status == "start":
                 self.load_api_krw_coin()
             if status == "start":
                 self.load_upbit_annoucement()
+                self.disclosure.load_discolure()
                 self.check_mode()
             if status == "buy" or status == "sell":
                 self.update_target_price()
@@ -119,6 +122,9 @@ class Auto:
             if not announce_coin in start_krw_list:
                 return announce_coin
 
+    def catch_new_announce(self, announce):
+        self.chat_bot.send_to_me_telegram_message("[새로운 공지]" + announce)
+
     def load_upbit_annoucement(self):
         # 테스트 시에만 사용하는 코드
         if self.test == True:
@@ -129,10 +135,20 @@ class Auto:
         upbit_announcement = res.json()["data"]["list"]
 
         for idx, unit in enumerate(upbit_announcement):
+            if idx == 0:
+                if self.latest_announce == "":
+                    self.latest_announce = unit["title"]
+                    self.catch_new_announce(unit["title"])
+                else:
+                    if self.latest_announce != unit["title"]:
+                        self.catch_new_announce(unit["title"])
+                        self.latest_announce = unit["title"]
+
             parsed_list = unit["title"].split(" ")
             self.window.list_widget_announce.addItem(QListWidgetItem(unit["title"]))
             if parsed_list[0] == "[거래]" and parsed_list[1] == "원화":
                 self.cur_anounce_coin_list.append("KRW-{}".format(parsed_list[-1][0:-1]))
+
 
         now = datetime.datetime.now().timestamp()
         time = datetime.datetime.fromtimestamp(int(now)).strftime('%Y-%m-%d %H:%M:%S')
@@ -178,7 +194,7 @@ class Auto:
     def buy_mode(self):
         if self.window.check_box_buy.isChecked():
             self.auto_bot["buy"] = True
-        self.start_target_price = self.order_upbit.buy_btc(self.target_market)
+            self.start_target_price = self.order_upbit.buy_btc(self.target_market)
         self.auto_bot["status"] = "sell"
         self.autobot_status_changed()
 
@@ -199,14 +215,14 @@ class Auto:
             self.logger.print_log("현재 가격 {} 구매 가격 {}".format(self.cur_target_price, self.start_target_price))
             self.logger.print_log("현재 나의 퍼센트 {}".format(my_percent))
             if self.window.check_box_sell.isChecked():
-                sell_percent = float(self.line_edit_sell_percent.text())
+                sell_percent = float(self.window.line_edit_sell_percent.text())
                 if my_percent > float(sell_percent) :
                     self.order_upbit.sell_btc(self.target_market)
                     self.auto_bot["status"] = "end"
                     self.autobot_status_changed()
 
             # 하락시 시장가 매도 (default: -10%)
-            if my_percent < float(-10.0) :
+            if my_percent < float(-20.0) :
                 self.order_upbit.sell_btc(self.target_market)
                 self.auto_bot["status"] = "end"
                 self.autobot_status_changed()
@@ -225,7 +241,10 @@ class Auto:
         #)
 
         # tes 2 : 공지사항 등록
-        self.cur_anounce_coin_list.append("KRW-SAND")
+#        self.cur_anounce_coin_list.append("KRW-SAND")
+
+        # test 3 : 공시 알림
+        self.disclosure.catch_new_disclosure("XRP 파트너십 체결", "KRW-XRP")
 
     def init_auto_bot(self):
         self.auto_bot = {

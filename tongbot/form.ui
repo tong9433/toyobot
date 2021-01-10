@@ -145,7 +145,7 @@
        </rect>
       </property>
       <property name="text">
-       <string/>
+       <string>hTp9ee3sAWowkadHYA1KlFnV2qyskQFpF13ek8Bg</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="line_edit_secret_key">
@@ -158,7 +158,7 @@
        </rect>
       </property>
       <property name="text">
-       <string/>
+       <string>OJmCaF8V9dKmEcxznmTb8srkeuEAX3usbcJ3zx93</string>
       </property>
      </widget>
      <widget class="QPushButton" name="btn_set_key">
@@ -224,7 +224,7 @@
        </rect>
       </property>
       <property name="text">
-       <string/>
+       <string>1439118580:AAFNlBQTcu4d55z-Y1kOuGeOBSfOkbi0i4A</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="line_edit_telegram_id">
@@ -237,7 +237,7 @@
        </rect>
       </property>
       <property name="text">
-       <string/>
+       <string>633201480</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_4">
@@ -508,7 +508,7 @@
       <property name="geometry">
        <rect>
         <x>490</x>
-        <y>590</y>
+        <y>640</y>
         <width>161</width>
         <height>61</height>
        </rect>
@@ -531,7 +531,7 @@
         <x>1380</x>
         <y>390</y>
         <width>481</width>
-        <height>531</height>
+        <height>291</height>
        </rect>
       </property>
       <property name="title">
@@ -549,12 +549,15 @@
        <property name="text">
         <string>자동매수</string>
        </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
       </widget>
       <widget class="QCheckBox" name="check_box_sell">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>190</y>
+         <y>140</y>
          <width>171</width>
          <height>41</height>
         </rect>
@@ -562,12 +565,15 @@
        <property name="text">
         <string>자동매도</string>
        </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
       </widget>
       <widget class="QLabel" name="label_11">
        <property name="geometry">
         <rect>
          <x>40</x>
-         <y>250</y>
+         <y>190</y>
          <width>141</width>
          <height>31</height>
         </rect>
@@ -580,20 +586,20 @@
        <property name="geometry">
         <rect>
          <x>200</x>
-         <y>250</y>
+         <y>190</y>
          <width>191</width>
          <height>31</height>
         </rect>
        </property>
        <property name="text">
-        <string>50</string>
+        <string>150</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_12">
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>240</y>
+         <y>180</y>
          <width>51</width>
          <height>41</height>
         </rect>
@@ -668,7 +674,7 @@
        <property name="geometry">
         <rect>
          <x>40</x>
-         <y>300</y>
+         <y>240</y>
          <width>141</width>
          <height>31</height>
         </rect>
@@ -681,7 +687,7 @@
        <property name="geometry">
         <rect>
          <x>200</x>
-         <y>300</y>
+         <y>240</y>
          <width>191</width>
          <height>31</height>
         </rect>
@@ -694,7 +700,7 @@
        <property name="geometry">
         <rect>
          <x>411</x>
-         <y>294</y>
+         <y>230</y>
          <width>51</width>
          <height>41</height>
         </rect>
@@ -912,9 +918,9 @@
       <property name="geometry">
        <rect>
         <x>490</x>
-        <y>650</y>
+        <y>690</y>
         <width>851</width>
-        <height>261</height>
+        <height>221</height>
        </rect>
       </property>
      </widget>
@@ -1545,21 +1551,27 @@
         <x>20</x>
         <y>410</y>
         <width>441</width>
-        <height>501</height>
+        <height>231</height>
        </rect>
       </property>
      </widget>
-     <widget class="QGroupBox" name="groupBox_6">
+     <widget class="QGroupBox" name="group_box_account">
       <property name="geometry">
        <rect>
-        <x>490</x>
-        <y>330</y>
-        <width>861</width>
-        <height>251</height>
+        <x>1380</x>
+        <y>700</y>
+        <width>481</width>
+        <height>101</height>
        </rect>
       </property>
       <property name="title">
        <string>계좌 변동 추적</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
       </property>
       <widget class="QLabel" name="label_33">
        <property name="geometry">
@@ -1583,7 +1595,7 @@
 </string>
        </property>
        <property name="text">
-        <string>실시간 BTC 계좌</string>
+        <string>실시간 KRW</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -1594,7 +1606,7 @@
         <rect>
          <x>210</x>
          <y>33</y>
-         <width>200</width>
+         <width>261</width>
          <height>30</height>
         </rect>
        </property>
@@ -1607,88 +1619,7 @@
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">border:1px solid black; color:red</string>
-       </property>
-       <property name="text">
-        <string>0</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_account_3">
-       <property name="geometry">
-        <rect>
-         <x>210</x>
-         <y>91</y>
-         <width>200</width>
-         <height>30</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Gulim</family>
-         <pointsize>15</pointsize>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border:1px solid black;
-</string>
-       </property>
-       <property name="text">
-        <string>0</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_34">
-       <property name="geometry">
-        <rect>
-         <x>11</x>
-         <y>91</y>
-         <width>200</width>
-         <height>30</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Gulim</family>
-         <pointsize>15</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border:1px solid black;
-</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_account_7">
-       <property name="geometry">
-        <rect>
-         <x>210</x>
-         <y>207</y>
-         <width>200</width>
-         <height>30</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Gulim</family>
-         <pointsize>15</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border:1px solid black; color:red</string>
+        <string notr="true">border:1px solid black;</string>
        </property>
        <property name="text">
         <string>0</string>
@@ -1719,93 +1650,10 @@
 </string>
        </property>
        <property name="text">
-        <string/>
+        <string>실시간 BTC</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_36">
-       <property name="geometry">
-        <rect>
-         <x>11</x>
-         <y>178</y>
-         <width>200</width>
-         <height>30</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Gulim</family>
-         <pointsize>15</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border:1px solid black;
-</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_37">
-       <property name="geometry">
-        <rect>
-         <x>11</x>
-         <y>120</y>
-         <width>200</width>
-         <height>30</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Gulim</family>
-         <pointsize>15</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border:1px solid black;
-</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_account_6">
-       <property name="geometry">
-        <rect>
-         <x>210</x>
-         <y>178</y>
-         <width>200</width>
-         <height>30</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Gulim</family>
-         <pointsize>15</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border:1px solid black; color:red</string>
-       </property>
-       <property name="text">
-        <string>0</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
       <widget class="QLabel" name="label_account_2">
@@ -1813,33 +1661,7 @@
         <rect>
          <x>210</x>
          <y>62</y>
-         <width>200</width>
-         <height>30</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Gulim</family>
-         <pointsize>15</pointsize>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border:1px solid black;
-</string>
-       </property>
-       <property name="text">
-        <string>0</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_38">
-       <property name="geometry">
-        <rect>
-         <x>11</x>
-         <y>149</y>
-         <width>200</width>
+         <width>261</width>
          <height>30</height>
         </rect>
        </property>
@@ -1856,92 +1678,43 @@
 </string>
        </property>
        <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_account_5">
-       <property name="geometry">
-        <rect>
-         <x>210</x>
-         <y>149</y>
-         <width>200</width>
-         <height>30</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Gulim</family>
-         <pointsize>15</pointsize>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border:1px solid black;
-</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_39">
-       <property name="geometry">
-        <rect>
-         <x>11</x>
-         <y>207</y>
-         <width>200</width>
-         <height>30</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Gulim</family>
-         <pointsize>15</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border:1px solid black;
-</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_account_4">
-       <property name="geometry">
-        <rect>
-         <x>210</x>
-         <y>120</y>
-         <width>200</width>
-         <height>30</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Gulim</family>
-         <pointsize>15</pointsize>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border:1px solid black;
-</string>
-       </property>
-       <property name="text">
         <string>0</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
+     </widget>
+     <widget class="QLabel" name="label_34">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>640</y>
+        <width>301</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>HY중고딕</family>
+        <pointsize>15</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string> 공시 Check</string>
+      </property>
+     </widget>
+     <widget class="QListWidget" name="list_widget_disclosure">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>690</y>
+        <width>441</width>
+        <height>221</height>
+       </rect>
+      </property>
      </widget>
     </widget>
    </widget>
